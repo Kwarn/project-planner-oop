@@ -8,10 +8,10 @@ class DOMhelper {
     const element = document.getElementById(elementId)
     const destination = document.querySelector(destinationSelector)
     destination.append(element)
+    element.scrollIntoView({ behavior: 'smooth' })
   }
   static addToDOM(element, destinationSelector) {
     const destination = document.getElementById(destinationSelector)
-
     destination.append(element)
   }
   static removeFromDOM(elementId) {
@@ -19,15 +19,14 @@ class DOMhelper {
   }
 }
 
-class DropArea{
-  constructor(){
-    this.getDropLocation()
-  }
-  getDropLocation(){
-    const location = document.getElementById('drop-to-delete')
-    location.addEventListener('d')
-  }
-}
+// class DropArea {
+//   constructor() {
+//     this.getDropLocation()
+//   }
+//   getDropLocation() {
+//     const location = document.getElementById('drop-to-delete')
+//   }
+// }
 
 class Tooltip {
   constructor() {}
@@ -89,7 +88,10 @@ class Project extends Tooltip {
   }
 
   connectDrag() {
-    document.getElementById(this.id).addEventListener('dragstart')
+    document.getElementById(this.id).addEventListener('dragstart', event => {
+      event.dataTransfer.setData('text/plain', this.id)
+      event.dataTransfer.effectAllowed = 'move'
+    })
   }
 
   connectToolTipBtn() {
@@ -125,7 +127,36 @@ class ProjectList {
         )
       )
     }
+    this.connectDroppable()
   }
+
+  connectDroppable() {
+    const list = document.querySelector(`#${this.type}-projects ul`)
+    list.addEventListener('dragenter', event => {
+      if (event.dataTransfer.types[0] === 'text/plain') {
+        list.parentElement.classList.add('droppable')
+        event.preventDefault()
+      }
+    })
+    list.addEventListener('dragover', event => {
+      if (event.dataTransfer.types[0] === 'text/plain') {
+        event.preventDefault()
+      }
+    })
+    list.addEventListener('dragleave', event => {
+      if (event.relatedTarget.closest(`#${this.type}-projects ul`) !== list)
+        list.parentElement.classList.remove('droppable')
+    })
+    list.addEventListener('drop', event => {
+      const projectId = event.dataTransfer.getData('text/plain')
+      if (this.#_projects.find(p => p.id === projectId)) {
+        return
+      }
+      document.getElementById(projectId).querySelector('button:last-of-type').click()
+      list.parentElement.classList.remove('droppable')
+    })
+  }
+
   updateButtonText(projectId) {
     const btn = document.getElementById(projectId).querySelectorAll('button')[1]
     btn.textContent = this.type === 'active' ? 'Finish' : 'Activate'
@@ -150,7 +181,7 @@ class ProjectList {
 
 class App {
   static init() {
-    const dropArea = new DropLocation()
+    // const dropArea = new DropArea()
     const activeList = new ProjectList('active')
     const finishedList = new ProjectList('finished')
     activeList.setSwitchFn(finishedList.addProject.bind(finishedList))
