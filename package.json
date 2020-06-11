@@ -1,0 +1,28 @@
+{
+  "name": "project-planner-oop",
+  "version": "1.0.0",
+  "description": "Demo app practicing OOP and events",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "build:dev": "webpack-dev-server",
+    "build:prod": "webpack --config webpack.config.prod.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kwarn/project-planner-oop.git"
+  },
+  "author": "Kw.dev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kwarn/project-planner-oop/issues"
+  },
+  "homepage": "https://github.com/Kwarn/project-planner-oop#readme",
+  "devDependencies": {
+    "eslint": "^7.2.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.0"
+  }
+}
