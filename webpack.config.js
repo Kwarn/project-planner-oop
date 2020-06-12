@@ -1,4 +1,6 @@
 const path = require('path');
+const CleanPlugin = require('clean-webpack-plugin')
+
 module.exports = {
   entry: './src/app.js',
   mode: 'development',
@@ -8,5 +10,8 @@ module.exports = {
     publicPath: 'assets/scripts/',
   },
   devtool: 'cheap-module-eval-source-map',
+  plugins: [
+    new CleanPlugin.CleanWebpackPlugin()
+  ]
 };
 
